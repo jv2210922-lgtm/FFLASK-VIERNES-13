@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1B4332">
+  <meta name="description" content="Una plataforma vecinal para cuidar las plazas públicas de Las Heras, Mendoza.">
+  <title>{% block title %}Mi Plaza Segura{% endblock %}</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Mi Plaza Segura, inicio">
+        <span class="brand-mark" aria-hidden="true">✿</span>
+        <span>Mi Plaza <strong>Segura</strong></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">Menú</button>
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('map_view') }}">Mapa de plazas</a>
+        <a href="{{ url_for('complaints') }}">Realizar un reclamo</a>
+        <a href="{{ url_for('tracking') }}">Seguimiento</a>
+        <a class="nav-admin" href="{{ url_for('admin') if session.get('admin_id') else url_for('login') }}">
+          {{ "Panel admin" if session.get("admin_id") else "Administración" }}
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <div class="container flash-stack" aria-live="polite">
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="flash flash-{{ category }}" role="status">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <a class="brand brand-footer" href="{{ url_for('index') }}"><span class="brand-mark" aria-hidden="true">✿</span><span>Mi Plaza <strong>Segura</strong></span></a>
+      <p>Una iniciativa para cuidar los espacios verdes de Las Heras, Mendoza.</p>
+      <a href="{{ url_for('map_view') }}">Explorar plazas <span aria-hidden="true">→</span></a>
+    </div>
+  </footer>
+
+  <button class="panic-button" type="button" data-open-emergency aria-label="Abrir opciones de emergencia">
+    <span class="panic-icon" aria-hidden="true">!</span><span>Emergencia</span>
+  </button>
+  <dialog class="emergency-dialog" id="emergency-dialog" aria-labelledby="emergency-title">
+    <form method="dialog" class="dialog-close-form"><button class="dialog-close" aria-label="Cerrar">×</button></form>
+    <span class="emergency-symbol" aria-hidden="true">!</span>
+    <h2 id="emergency-title">¿Necesitás ayuda urgente?</h2>
+    <p>Este sitio no envía alertas automáticas. Para comunicarte con emergencias, llamá directamente al 911.</p>
+    <a class="button button-danger button-wide" href="tel:911">Llamar al 911</a>
+    <button class="button button-outline button-wide" type="button" data-close-emergency>Volver al sitio</button>
+    <p class="dialog-note">Usá el 911 solo ante una emergencia real.</p>
+  </dialog>
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

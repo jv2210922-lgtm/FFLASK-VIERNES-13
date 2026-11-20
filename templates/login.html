@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Administración | Mi Plaza Segura{% endblock %}
+{% block content %}
+<section class="login-wrap container">
+  <form class="panel login-card" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <span class="login-mark" aria-hidden="true">♧</span><span class="eyebrow">Acceso restringido</span><h1>Panel administrativo</h1><p>Ingresá con tu cuenta de administración.</p>
+    <label class="field">Usuario<input name="username" type="text" maxlength="80" autocomplete="username" required autofocus></label>
+    <label class="field">Contraseña<input name="password" type="password" autocomplete="current-password" required></label>
+    <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+    <button class="button button-primary button-wide" type="submit">Iniciar sesión</button>
+    <small>La cuenta se crea desde la terminal con el comando <code>flask --app app create-admin</code>.</small>
+  </form>
+</section>
+{% endblock %}

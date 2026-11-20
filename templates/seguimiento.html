@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Seguimiento de reclamos | Mi Plaza Segura{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">Estamos trabajando</span><h1>Seguí tu reclamo.</h1><p>Ingresá el código que recibiste al enviar el formulario.</p></div></section>
+<section class="container tracking-layout">
+  <form class="panel tracking-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label class="field">Código de seguimiento<input type="text" name="tracking_code" value="{{ request.form.get('tracking_code', request.args.get('code', '')) }}" placeholder="Ej. A1B2C3D4E5F6G7H8" maxlength="16" required autocomplete="off"></label>
+    <button class="button button-primary" type="submit">Consultar estado <span aria-hidden="true">→</span></button>
+  </form>
+  {% if report %}
+  <article class="panel tracking-result">
+    <div class="result-heading"><div><span class="eyebrow">Código {{ report.tracking_code }}</span><h2>{{ report.plaza_name }}</h2></div><span class="status-badge status-{{ report.status|lower|replace(' ', '-')|replace('ó', 'o') }}">{{ report.status }}</span></div>
+    <dl class="report-details"><div><dt>Problema</dt><dd>{{ report.category }}</dd></div><div><dt>Fecha</dt><dd>{{ report.reported_at }}</dd></div><div><dt>Descripción</dt><dd>{{ report.description }}</dd></div></dl>
+    <ol class="status-steps">
+      {% for status in ["Pendiente", "En revisión", "En proceso", "Solucionado"] %}
+      <li class="{% if loop.index0 <= statuses_index(report.status) %}step-done{% endif %}"><span></span>{{ status }}</li>
+      {% endfor %}
+    </ol>
+  </article>
+  {% endif %}
+</section>
+{% endblock %}

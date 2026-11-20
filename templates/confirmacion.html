@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Reclamo recibido | Mi Plaza Segura{% endblock %}
+{% block content %}
+<section class="success-wrap container">
+  <div class="success-card">
+    <span class="success-icon" aria-hidden="true">✓</span><span class="eyebrow">Gracias por participar</span>
+    <h1>Recibimos tu reclamo.</h1><p>Guardá este número. Lo vas a necesitar para consultar el estado de tu reclamo.</p>
+    <div class="tracking-code" aria-label="Código de seguimiento">{{ tracking_code }}</div>
+    <a class="button button-primary" href="{{ url_for('tracking', code=tracking_code) }}">Consultar estado <span aria-hidden="true">→</span></a>
+    <a class="text-link" href="{{ url_for('index') }}">Volver al inicio</a>
+  </div>
+</section>
+{% endblock %}

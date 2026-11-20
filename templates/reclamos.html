@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Realizar un reclamo | Mi Plaza Segura{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container"><span class="eyebrow">Tu voz mejora el barrio</span><h1>Contanos qué sucede.</h1><p>Completá los datos del problema para que pueda ser revisado. Los campos marcados son obligatorios.</p></div>
+</section>
+<section class="container form-layout">
+  <form class="panel form-panel" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if not plazas %}<div class="flash flash-info">Todavía no hay plazas registradas. Volvé más tarde o contactá a la administración municipal.</div>{% endif %}
+    <div class="form-section-title"><span>01</span><div><h2>Sobre vos</h2><p>Estos datos son opcionales y solo se usarán para contactarte.</p></div></div>
+    <div class="form-grid">
+      <label class="field">Nombre <span class="optional">(opcional)</span><input type="text" name="name" maxlength="100" autocomplete="name" value="{{ request.form.get('name', '') }}"></label>
+      <label class="field">Correo electrónico <span class="optional">(opcional)</span><input type="email" name="email" maxlength="254" autocomplete="email" value="{{ request.form.get('email', '') }}"></label>
+    </div>
+    <div class="form-section-title"><span>02</span><div><h2>Sobre el problema</h2><p>Cuanto más precisa sea la información, mejor podremos ayudarte.</p></div></div>
+    <div class="form-grid">
+      <label class="field">Plaza <span class="required">*</span>
+        <select name="plaza_id" required {% if not plazas %}disabled{% endif %}>
+          <option value="">Seleccioná una plaza</option>
+          {% for plaza in plazas %}<option value="{{ plaza.id }}" {% if selected_plaza == plaza.id or request.form.get('plaza_id', type=int) == plaza.id %}selected{% endif %}>{{ plaza.name }}{% if plaza.address %} — {{ plaza.address }}{% endif %}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="field">Tipo de problema <span class="required">*</span>
+        <select name="category" required>
+          <option value="">Seleccioná una categoría</option>
+          {% for category in categories %}<option {% if request.form.get('category') == category %}selected{% endif %}>{{ category }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="field">Fecha del reclamo <span class="required">*</span><input type="date" name="reported_at" max="{{ today }}" value="{{ request.form.get('reported_at', today) }}" required></label>
+      <label class="field field-full">Descripción detallada <span class="required">*</span><textarea name="description" rows="5" minlength="10" maxlength="3000" placeholder="Describí el problema y dónde se encuentra dentro de la plaza..." required>{{ request.form.get('description', '') }}</textarea><small>Entre 10 y 3000 caracteres.</small></label>
+      <label class="field field-full">Fotografía <span class="optional">(opcional, máximo 5 MB)</span><input type="file" name="photo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"><small>Formatos permitidos: JPG, PNG o WEBP.</small></label>
+    </div>
+    <div class="form-actions"><button class="button button-primary" type="submit" {% if not plazas %}disabled{% endif %}>Enviar reclamo <span aria-hidden="true">→</span></button><span>Al enviar, recibirás un código para consultar el estado.</span></div>
+  </form>
+  <aside class="form-aside">
+    <div class="aside-card"><span class="aside-icon" aria-hidden="true">✓</span><h3>¿Qué pasa después?</h3><ol><li><span>1</span>Recibís tu código de seguimiento.</li><li><span>2</span>El equipo revisa el reclamo.</li><li><span>3</span>Podés consultar las actualizaciones.</li></ol><a class="text-link" href="{{ url_for('tracking') }}">Ya tengo un código →</a></div>
+    <p class="privacy-note"><span aria-hidden="true">◈</span> Tu correo y nombre son opcionales. No se mostrarán públicamente.</p>
+  </aside>
+</section>
+{% endblock %}

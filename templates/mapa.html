@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Mapa de plazas | Mi Plaza Segura{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-map"><div class="container"><span class="eyebrow">Explorá tu comunidad</span><h1>Plazas de Las Heras.</h1><p>Encontrá espacios verdes y conocé los reportes realizados por los vecinos.</p></div></section>
+<section class="container map-section">
+  <div class="map-toolbar">
+    <label class="search-field"><span aria-hidden="true">⌕</span><input type="search" id="plaza-search" placeholder="Buscar por nombre o dirección" aria-label="Buscar plazas"></label>
+    <label class="filter-field">Estado de reclamos
+      <select id="plaza-status"><option value="all">Todos los estados</option><option value="Pendiente">Pendiente</option><option value="En revisión">En revisión</option><option value="En proceso">En proceso</option><option value="Solucionado">Solucionado</option><option value="none">Sin reclamos</option></select>
+    </label>
+  </div>
+  {% if plazas %}<div id="plaza-map" class="leaflet-map" role="application" aria-label="Mapa interactivo con plazas registradas"></div>
+  {% else %}<div class="map-empty"><span aria-hidden="true">⌖</span><h2>Aún no hay plazas en el mapa</h2><p>Las ubicaciones se agregarán cuando la administración registre plazas con coordenadas verificadas.</p><a class="button button-outline" href="{{ url_for('login') }}">Acceso administrativo</a></div>{% endif %}
+  <p class="map-disclaimer">El mapa muestra únicamente plazas registradas por la administración. La ubicación del mapa es solo una referencia general de Las Heras.</p>
+</section>
+{% endblock %}
+{% block scripts %}
+{% if plazas %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script id="plaza-data" type="application/json">{{ plazas|tojson }}</script>
+<script src="{{ url_for('static', filename='js/map.js') }}" defer></script>
+{% endif %}
+{% endblock %}
